@@ -8,8 +8,10 @@ import { useAuth } from "@/hooks/useAuth";
 import Landing from "@/pages/landing";
 import Home from "@/pages/home";
 import UserDashboard from "@/pages/user-dashboard";
+import EmployeeDashboard from "@/pages/employee-dashboard";
+import AdminDashboard from "@/pages/admin-dashboard";
+import SuperAdminDashboard from "@/pages/super-admin-dashboard";
 import Inbox from "@/pages/inbox";
-import Admin from "@/pages/admin";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -23,8 +25,10 @@ function Router() {
         <>
           <Route path="/" component={Home} />
           <Route path="/dashboard" component={UserDashboard} />
+          <Route path="/employee" component={EmployeeDashboard} />
+          <Route path="/admin" component={AdminDashboard} />
+          <Route path="/super-admin" component={SuperAdminDashboard} />
           <Route path="/inbox" component={Inbox} />
-          <Route path="/admin" component={Admin} />
         </>
       )}
       <Route component={NotFound} />
