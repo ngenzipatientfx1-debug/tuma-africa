@@ -19,11 +19,11 @@ import {
   Phone,
   Mail,
   Calendar,
-  FileText
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
+import { VerificationUploadForm } from "@/components/verification-upload-form";
 import type { Order } from "@shared/schema";
 
 export default function UserDashboard() {
@@ -473,21 +473,8 @@ export default function UserDashboard() {
 
               {/* Verification Upload Section */}
               {user?.verificationStatus !== "verified" && (
-                <div className="mt-8 p-6 border-2 border-dashed border-border rounded-lg">
-                  <h3 className="font-semibold mb-4 flex items-center gap-2">
-                    <FileText className="w-5 h-5" />
-                    Upload Verification Documents
-                  </h3>
-                  <p className="text-sm text-muted-foreground mb-4">
-                    To verify your account, please upload:
-                  </p>
-                  <ul className="list-disc list-inside space-y-2 text-sm text-muted-foreground mb-6">
-                    <li>Government ID (≤2 MB)</li>
-                    <li>Selfie with ID (≤2 MB)</li>
-                  </ul>
-                  <p className="text-sm text-muted-foreground italic">
-                    Verification upload form will be implemented here
-                  </p>
+                <div className="mt-8">
+                  <VerificationUploadForm onSuccess={() => window.location.reload()} />
                 </div>
               )}
             </Card>
