@@ -1,0 +1,311 @@
+🧩 1. USER DASHBOARD
+
+Purpose:
+To allow verified users to create, track, and communicate about their product orders.
+
+Main Sections:
+🔹 1. Orders
+
+Order Made:
+
+Shows all orders the user submitted (status: pending or under review).
+
+Displays:
+
+Order ID
+
+Product Name
+
+Quantity
+
+Screenshot (≤150 KB)
+
+Order Date
+
+Current Status
+
+Declined Orders:
+
+Shows rejected orders.
+
+Includes admin/employee comment on why it was declined.
+
+Approved Orders:
+
+Shows accepted orders after payment confirmation.
+
+Includes details of who handled it (Employee or Admin).
+
+🔹 2. Order Tracking
+
+Displays current stage of each approved order:
+
+Purchased from China
+
+In Warehouse
+
+In Ship/Airplane
+
+In Rwanda
+
+Each stage updated by Order Processing Employee or Admin.
+
+🔹 3. Make New Order
+
+Opens the Paste Link Area, where the user can:
+
+Paste product link.
+
+Upload product screenshot (≤150 KB).
+
+Fill in: Product name, quantity, variation, specifications, notes.
+
+Submit.
+
+🔹 4. Inbox (Chat System)
+
+Real-time chat between User and Africa Link Cargo (Employee/Admin).
+
+Can send:
+
+Text
+
+Images ≤150 KB
+
+Videos ≤2 MB
+
+Allows receiving updates, clarifications, and upload requests.
+
+🔹 5. Profile & Verification Info
+
+Displays verification status (“Verified” or “Pending”).
+
+Shows user’s personal data (name, phone, ID confirmation).
+
+If not verified, shows message:
+
+“Thanks — we’ve received your info. We’ll check it and let you know within 24 hours. Murakoze twakiriye ubutumwa bwanyu, mwihangane mu gihe tukiri kugenzura.”
+
+USER RIGHTS:
+
+✅ Can view, edit, and submit their own orders.
+✅ Can chat with ALC (employees/admin).
+✅ Can upload allowed media (within limits).
+❌ Cannot edit or delete orders after submission.
+❌ Cannot see other users’ orders.
+❌ Cannot modify system settings or content.
+
+🧩 2. ORDER PROCESSING EMPLOYEE DASHBOARD
+
+Purpose:
+To handle customer orders, communicate updates, and collaborate with Admins.
+
+Main Sections:
+🔹 1. Orders Management
+
+See all user orders assigned or accessible to them.
+
+View details: Order ID, product info, user info, screenshots, status.
+
+Actions:
+
+Approve or Decline orders (with reason).
+
+Update order status:
+
+Purchased from China
+
+In Warehouse
+
+In Ship/Airplane
+
+In Rwanda
+
+Add internal notes (visible to Admin).
+
+🔹 2. User Communication (Inbox)
+
+Chat with users directly about their orders.
+
+Send/receive:
+
+Text
+
+Image ≤150 KB
+
+Video ≤2 MB
+
+Mark messages as read/unread.
+
+🔹 3. Admin Communication
+
+Separate internal chat area with Admin.
+
+Can send/receive:
+
+Text
+
+Image ≤150 KB
+
+Document ≤2 MB
+
+Video ≤2 MB
+
+🔹 4. Search & Filter
+
+Search by User Name or Order ID.
+
+Filter by order status (pending, approved, shipped, etc.).
+
+EMPLOYEE RIGHTS:
+
+✅ Can view and manage assigned user orders.
+✅ Can approve/decline orders with comments.
+✅ Can update order tracking stages.
+✅ Can communicate with both Users and Admins.
+❌ Cannot verify new users.
+❌ Cannot modify system settings, hero content, or policies.
+❌ Cannot delete any user data.
+
+🧩 3. ADMIN DASHBOARD
+
+Purpose:
+To supervise operations, verify users, and monitor overall order flow.
+
+Main Sections:
+🔹 1. User Management
+
+See all registered users.
+
+Review their verification data (ID, selfie, phone).
+
+Approve or reject verification requests.
+
+Edit or deactivate accounts if needed.
+
+🔹 2. Orders Overview
+
+Access all orders in the system (from all employees).
+
+Actions:
+
+Approve/Decline orders.
+
+Edit product information (if necessary).
+
+Assign or reassign orders to employees.
+
+Can also update order tracking stages.
+
+🔹 3. Employee Communication
+
+Chat with employees to provide instructions or clarifications.
+
+Send:
+
+Text
+
+Images ≤150 KB
+
+Videos/Documents ≤2 MB
+
+🔹 4. User Communication
+
+Can step in and talk directly to users if there’s a serious issue.
+
+Has same media limits.
+
+🔹 5. Analytics
+
+Dashboard panels showing:
+
+Total users
+
+Verified vs. unverified users
+
+Active orders by stage
+
+Declined orders
+
+Top-selling product categories
+
+Active employees
+
+🔹 6. Reports & Export
+
+Generate order reports by date range.
+
+Export to CSV or PDF.
+
+ADMIN RIGHTS:
+
+✅ Full visibility over all users and orders.
+✅ Can verify users.
+✅ Can approve or reject orders.
+✅ Can communicate with users and employees.
+✅ Can see analytics and export reports.
+❌ Cannot modify homepage content, hero media, or company details.
+❌ Cannot delete the system database.
+
+🧩 4. SUPER ADMIN DASHBOARD
+
+Purpose:
+Full control over the entire system, users, content, and structure.
+
+Main Sections:
+🔹 1. Full Admin Control
+
+All admin capabilities (view/verify users, manage orders, communicate).
+
+Override or revoke admin/employee decisions.
+
+Create, edit, or remove employee/admin accounts.
+
+🔹 2. Homepage Management
+
+Manage Hero Area:
+
+Choose between video or image slideshow.
+
+Upload, edit, or delete hero media.
+
+Manage About Us:
+
+Update text, image, or video content.
+
+Manage Terms & Privacy Policy:
+
+Edit or replace written policy content.
+
+Manage Social Media Links:
+
+Upload platform icons and links.
+
+Manage Our Companies:
+
+Add up to 10 companies with logo, name, and URL.
+
+🔹 3. Analytics & Reports
+
+See complete system analytics (users, orders, traffic).
+
+Filter by date, employee, or product category.
+
+Export comprehensive reports.
+
+🔹 4. Security & Backup
+
+Manage access control (who can log in to dashboards).
+
+Initiate or schedule database backups.
+
+Reset employee/admin credentials.
+
+SUPER ADMIN RIGHTS:
+
+✅ Can access and modify everything.
+✅ Can create/edit/delete any user, employee, or admin.
+✅ Can modify homepage content and company info.
+✅ Can manage system backup and security.
+✅ Can view all messages across the system.
+❌ No restriction — full root-level privileges.

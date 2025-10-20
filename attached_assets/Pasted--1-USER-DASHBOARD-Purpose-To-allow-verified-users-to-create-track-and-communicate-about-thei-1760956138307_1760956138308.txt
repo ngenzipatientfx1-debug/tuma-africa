@@ -1,0 +1,318 @@
+🧩 1. USER DASHBOARD
+Purpose:
+To allow verified users to create, track, and communicate about their product orders.
+________________________________________
+Main Sections:
+🔹 1. Orders
+•	Order Made:
+o	Shows all orders the user submitted (status: pending or under review).
+o	Displays:
+	Order ID
+	Product Name
+	Quantity
+	Screenshot (≤150 KB)
+	Order Date
+	Current Status
+•	Declined Orders:
+o	Shows rejected orders.
+o	Includes admin/employee comment on why it was declined.
+•	Approved Orders:
+o	Shows accepted orders after payment confirmation.
+o	Includes details of who handled it (Employee or Admin).
+🔹 2. Order Tracking
+•	Displays current stage of each approved order:
+o	Purchased from China
+o	In Warehouse
+o	In Ship/Airplane
+o	In Rwanda
+•	Each stage updated by Order Processing Employee or Admin.
+🔹 3. Make New Order
+•	Opens the Paste Link Area, where the user can:
+o	Paste product link.
+o	Upload product screenshot (≤150 KB).
+o	Fill in: Product name, quantity, variation, specifications, notes.
+o	Submit.
+🔹 4. Inbox (Chat System)
+•	Real-time chat between User and Africa Link Cargo (Employee/Admin).
+•	Can send:
+o	Text
+o	Images ≤150 KB
+o	Videos ≤2 MB
+•	Allows receiving updates, clarifications, and upload requests.
+🔹 5. Profile & Verification Info
+•	Displays verification status (“Verified” or “Pending”).
+•	Shows user’s personal data (name, phone, ID confirmation).
+•	If not verified, shows message:
+“Thanks — we’ve received your info. We’ll check it and let you know within 24 hours. Murakoze twakiriye ubutumwa bwanyu, mwihangane mu gihe tukiri kugenzura.”
+________________________________________
+USER RIGHTS:
+✅ Can view, edit, and submit their own orders.
+✅ Can chat with ALC (employees/admin).
+✅ Can upload allowed media (within limits).
+❌ Cannot edit or delete orders after submission.
+❌ Cannot see other users’ orders.
+❌ Cannot modify system settings or content.
+________________________________________
+🧩 2. ORDER PROCESSING EMPLOYEE DASHBOARD
+Purpose:
+To handle customer orders, communicate updates, and collaborate with Admins.
+________________________________________
+Main Sections:
+🔹 1. Orders Management
+•	See all user orders assigned or accessible to them.
+•	View details: Order ID, product info, user info, screenshots, status.
+•	Actions:
+o	Approve or Decline orders (with reason).
+o	Update order status:
+	Purchased from China
+	In Warehouse
+	In Ship/Airplane
+	In Rwanda
+o	Add internal notes (visible to Admin).
+🔹 2. User Communication (Inbox)
+•	Chat with users directly about their orders.
+•	Send/receive:
+o	Text
+o	Image ≤150 KB
+o	Video ≤2 MB
+•	Mark messages as read/unread.
+🔹 3. Admin Communication
+•	Separate internal chat area with Admin.
+•	Can send/receive:
+o	Text
+o	Image ≤150 KB
+o	Document ≤2 MB
+o	Video ≤2 MB
+🔹 4. Search & Filter
+•	Search by User Name or Order ID.
+•	Filter by order status (pending, approved, shipped, etc.).
+________________________________________
+EMPLOYEE RIGHTS:
+✅ Can view and manage assigned user orders.
+✅ Can approve/decline orders with comments.
+✅ Can update order tracking stages.
+✅ Can communicate with both Users and Admins.
+❌ Cannot verify new users.
+❌ Cannot modify system settings, hero content, or policies.
+❌ Cannot delete any user data.
+________________________________________
+🧩 3. ADMIN DASHBOARD
+Purpose:
+To supervise operations, verify users, and monitor overall order flow.
+________________________________________
+Main Sections:
+🔹 1. User Management
+•	See all registered users.
+•	Review their verification data (ID, selfie, phone).
+•	Approve or reject verification requests.
+•	Edit or deactivate accounts if needed.
+🔹 2. Orders Overview
+•	Access all orders in the system (from all employees).
+•	Actions:
+o	Approve/Decline orders.
+o	Edit product information (if necessary).
+o	Assign or reassign orders to employees.
+•	Can also update order tracking stages.
+🔹 3. Employee Communication
+•	Chat with employees to provide instructions or clarifications.
+•	Send:
+o	Text
+o	Images ≤150 KB
+o	Videos/Documents ≤2 MB
+🔹 4. User Communication
+•	Can step in and talk directly to users if there’s a serious issue.
+•	Has same media limits.
+🔹 5. Analytics
+•	Dashboard panels showing:
+o	Total users
+o	Verified vs. unverified users
+o	Active orders by stage
+o	Declined orders
+o	Top-selling product categories
+o	Active employees
+🔹 6. Reports & Export
+•	Generate order reports by date range.
+•	Export to CSV or PDF.
+________________________________________
+ADMIN RIGHTS:
+✅ Full visibility over all users and orders.
+✅ Can verify users.
+✅ Can approve or reject orders.
+✅ Can communicate with users and employees.
+✅ Can see analytics and export reports.
+❌ Cannot modify homepage content, hero media, or company details.
+❌ Cannot delete the system database.
+________________________________________
+🧩 4. SUPER ADMIN DASHBOARD
+Purpose:
+Full control over the entire system, users, content, and structure.
+________________________________________
+Main Sections:
+🔹 1. Full Admin Control
+•	All admin capabilities (view/verify users, manage orders, communicate).
+•	Override or revoke admin/employee decisions.
+•	Create, edit, or remove employee/admin accounts.
+🔹 2. Homepage Management
+•	Manage Hero Area:
+o	Choose between video or image slideshow.
+o	Upload, edit, or delete hero media.
+•	Manage About Us:
+o	Update text, image, or video content.
+•	Manage Terms & Privacy Policy:
+o	Edit or replace written policy content.
+•	Manage Social Media Links:
+o	Upload platform icons and links.
+•	Manage Our Companies:
+o	Add up to 10 companies with logo, name, and URL.
+🔹 3. Analytics & Reports
+•	See complete system analytics (users, orders, traffic).
+•	Filter by date, employee, or product category.
+•	Export comprehensive reports.
+🔹 4. Security & Backup
+•	Manage access control (who can log in to dashboards).
+•	Initiate or schedule database backups.
+•	Reset employee/admin credentials.
+________________________________________
+SUPER ADMIN RIGHTS:
+✅ Can access and modify everything.
+✅ Can create/edit/delete any user, employee, or admin.
+✅ Can modify homepage content and company info.
+✅ Can manage system backup and security.
+✅ Can view all messages across the system.
+❌ No restriction — full root-level privileges.
+
+Tuma-Africa Link Cargo — Home Site Structure
+🏠 Overview
+The homepage is the face of the platform — it introduces users to the service, allows them to place orders from Chinese e-commerce sites, compress images, read about the company, and access policies and social links.
+Everything on the homepage can be managed or updated by the Super Admin from their dashboard.
+________________________________________
+1. HEADER SECTION
+Top Navigation Bar should include:
+•	Logo (Tuma-Africa Link Cargo)
+•	Menu links:
+o	Home
+o	About Us
+o	Terms & Privacy Policy
+o	Contact / Help
+o	Language switch (English / Kinyarwanda)
+•	Buttons:
+o	Login / Sign Up → opens modal or page with Google sign-in or email registration.
+Super Admin Controls:
+•	Upload/change logo.
+•	Update navigation links or add/remove pages.
+________________________________________
+2. HERO AREA
+Purpose: To capture attention and immediately explain what the platform does.
+Visual Content:
+•	Background media: either video or image slideshow, depending on what Super Admin chooses.
+•	Video or slideshow should automatically play or rotate.
+Text Content (overlay on hero media):
+Order From All Chinese E-commerce Platforms Stress-Free
+Only Link — We Handle The Rest.
+Africa Link Cargo — Smarter Shipping.
+Button:
+🟩 Tuma-Africa Link Cargo → directs to the Link Paste Area below on the same page or another page.
+Super Admin Controls:
+•	Upload/change hero video or images.
+•	Edit hero text and button link.
+•	Choose between “video mode” or “image mode”.
+________________________________________
+3. LINK PASTE AREA (Order Form Entry)
+Purpose: To allow users to paste product links from Chinese platforms (like Alibaba, 1688, etc.) and send details.
+What users see:
+•	Instruction text:
+“Paste your product link from Chinese e-commerce sites below and provide details. We’ll handle the rest.”
+•	Input fields:
+o	Paste Product Link (URL input)
+o	Upload Product Screenshot (≤150 KB)
+o	Product Name (text)
+o	Product Quantity (number)
+o	Optional fields:
+	Product Variation (e.g., color, size)
+	Specifications (optional)
+	Additional Notes (optional)
+•	Button: Submit Order
+After Submission:
+•	System sends a message:
+“We are going to find this product for you shortly. We’ll reach you in your inbox for more details.”
+Kinyarwanda translation:
+“Murakoze, mu gihe kitarambiranye urabona ubutumwa bugaha andi makuru arambuye ku gicuruzwa ushaka. Africa Link Cargo — Smarter Shipping.”
+•	Redirects user to User Dashboard → Orders.
+Verification Rule:
+•	User must be verified to submit order. If not, prompt appears:
+“Please verify your account before making an order.”
+________________________________________
+4. PHOTO COMPRESSOR AREA
+Purpose: To help users compress photos before uploading to the system (especially screenshots or product images).
+What users see:
+•	Instruction text:
+“Upload a photo up to 15 MB to get a compressed version between 100 and 150 KB.”
+•	Upload Button: “Select Photo”
+•	After upload → auto compress → Download link appears.
+•	After user downloads → system deletes compressed photo (no storage).
+Super Admin Controls:
+•	None (automatic system tool).
+________________________________________
+5. ABOUT US SECTION
+Purpose: To explain what the company does, mission, and values.
+Content Options:
+•	Text area with company story.
+•	Optional image or embedded video.
+•	Headline suggestion:
+“Connecting Africa to China — Reliable. Simple. Smart.”
+Super Admin Controls:
+•	Edit text, upload or replace image/video directly from dashboard.
+________________________________________
+6. SOCIAL MEDIA LINKS AREA
+Purpose: To connect users with official company social pages.
+What users see:
+•	Row of social icons (Facebook, Instagram, TikTok, YouTube, etc.)
+•	Each icon clickable → opens the corresponding company link.
+Super Admin Controls:
+•	Upload/change social media icons and their URLs.
+________________________________________
+7. TERMS & PRIVACY POLICY AREA
+Purpose: To show platform’s legal and usage information.
+Display:
+•	Short intro + “Read More” button linking to the full Terms and Privacy Policy page.
+•	Both documents can be written or updated by Super Admin.
+Super Admin Controls:
+•	Write, edit, or upload Terms & Privacy content in dashboard.
+•	Add sections or attachments (e.g., PDF).
+________________________________________
+8. OUR OTHER COMPANIES SECTION
+Purpose: To showcase Africa Link Cargo’s partner or sub-brands.
+What users see:
+•	Grid or slider showing up to 10 companies.
+•	Each company card includes:
+o	Small logo (image)
+o	Name
+o	Clickable link (URL)
+Super Admin Controls:
+•	Add up to 10 companies (logo + name + link).
+•	Edit or remove existing ones.
+________________________________________
+9. FOOTER AREA
+Purpose: To give consistent navigation and company info at the bottom.
+Contains:
+•	Quick links: Home | About | Terms | Privacy Policy | Contact
+•	Social icons (same as above)
+•	Copyright © [Year] Africa Link Cargo
+•	“Powered by [Your Developer/Brand Name]”
+________________________________________
+10. LOGIN / SIGNUP SYSTEM
+Triggered from: Header or any “Order Now” button if user not logged in.
+Options:
+•	Login with Google (OAuth 2.0)
+•	Create Account Manually:
+o	Name, Email, Phone, Password.
+•	Account Verification Step:
+o	Upload Government ID (image ≤2 MB)
+o	Upload Selfie (≤2 MB)
+o	Wait for manual verification by Admin.
+Message after submission:
+“Thanks — we’ve received your info. We’ll check it and let you know within 24 hours.”
+“Murakoze twakiriye ubutumwa bwanyu, mwihangane mu gihe tukiri kugenzura.”
+Verification Note:
+•	Admin must verify user before they can place any order.
+
