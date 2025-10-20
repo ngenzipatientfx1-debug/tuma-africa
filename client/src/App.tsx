@@ -19,18 +19,12 @@ function Router() {
 
   return (
     <Switch>
-      {isLoading || !isAuthenticated ? (
-        <Route path="/" component={NewLanding} />
-      ) : (
-        <>
-          <Route path="/" component={Home} />
-          <Route path="/dashboard" component={UserDashboard} />
-          <Route path="/employee" component={EmployeeDashboard} />
-          <Route path="/admin" component={AdminDashboard} />
-          <Route path="/super-admin" component={SuperAdminDashboard} />
-          <Route path="/inbox" component={Inbox} />
-        </>
-      )}
+      <Route path="/" component={isAuthenticated ? UserDashboard : NewLanding} />
+      <Route path="/dashboard" component={UserDashboard} />
+      <Route path="/employee" component={EmployeeDashboard} />
+      <Route path="/admin" component={AdminDashboard} />
+      <Route path="/super-admin" component={SuperAdminDashboard} />
+      <Route path="/inbox" component={Inbox} />
       <Route component={NotFound} />
     </Switch>
   );

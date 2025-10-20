@@ -26,7 +26,19 @@ export default function NewLanding() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // This will redirect to login if not authenticated
+    
+    // Save form data to localStorage so we can retrieve after login
+    localStorage.setItem("pendingOrder", JSON.stringify({
+      productLink,
+      productName,
+      quantity,
+      variation,
+      specifications,
+      shippingAddress,
+      notes,
+    }));
+    
+    // Redirect to login - after login they'll be taken to dashboard where they can verify
     window.location.href = "/api/login";
   };
 

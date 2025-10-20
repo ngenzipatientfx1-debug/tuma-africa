@@ -29,7 +29,17 @@ import type { Order } from "@shared/schema";
 export default function UserDashboard() {
   const { user, isAuthenticated, isLoading } = useAuth();
   const { toast } = useToast();
-  const [activeTab, setActiveTab] = useState<string>("orders");
+  // Show profile tab first if user is not verified, otherwise show orders
+  const [activeTab, setActiveTab] = useState<string>("profile");
+
+  // Update tab when verification status changes
+  useEffect(() => {
+    if (user?.verificationStatus === "verified") {
+      setActiveTab("orders");
+    } else if (user?.verificationStatus === "pending" || user?.verificationStatus === "not_verified") {
+      setActiveTab("profile");
+    }
+  }, [user?.verificationStatus]);
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
