@@ -52,8 +52,9 @@ export function VerificationUploadForm({ onSuccess }: { onSuccess?: () => void }
       }
 
       toast({
-        title: "Documents Uploaded",
-        description: "Your verification documents have been submitted. We'll review them within 24 hours.",
+        title: "Thanks — we've received your info",
+        description: "English: We'll check it and let you know within 24 hours. | Kinyarwanda: Murakoze twakiriye ubutumwa bwanyu, mwihangane mu gihe tukiri kugenzura.",
+        duration: 10000,
       });
 
       if (onSuccess) onSuccess();
@@ -107,15 +108,6 @@ export function VerificationUploadForm({ onSuccess }: { onSuccess?: () => void }
           {uploading ? "Uploading..." : "Submit for Verification"}
         </Button>
       </form>
-
-      <div className="mt-4 p-4 bg-muted rounded-lg">
-        <p className="text-xs text-muted-foreground">
-          <strong>English:</strong> Thanks — we've received your info. We'll check it and let you know within 24 hours.
-        </p>
-        <p className="text-xs text-muted-foreground mt-2">
-          <strong>Kinyarwanda:</strong> Murakoze twakiriye ubutumwa bwanyu, mwihangane mu gihe tukiri kugenzura.
-        </p>
-      </div>
     </Card>
   );
 }
