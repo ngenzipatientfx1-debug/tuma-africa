@@ -3,8 +3,8 @@ import bcrypt from "bcryptjs";
 import { type RequestHandler } from "express";
 import { storage } from "./storage";
 
-const JWT_SECRET = process.env.JWT_SECRET || "fallback-secret-change-in-production";
-const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "7d";
+const JWT_SECRET: string = process.env.JWT_SECRET || "fallback-secret-change-in-production";
+const JWT_EXPIRES_IN: string = process.env.JWT_EXPIRES_IN || "7d";
 
 export interface JwtPayload {
   userId: string;
@@ -14,6 +14,7 @@ export interface JwtPayload {
 
 // Generate JWT token
 export function generateToken(payload: JwtPayload): string {
+  // @ts-expect-error - TypeScript jsonwebtoken type definitions are overly strict. Runtime accepts string values like "7d" just fine.
   return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
 }
 
