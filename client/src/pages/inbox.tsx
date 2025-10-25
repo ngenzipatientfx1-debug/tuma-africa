@@ -33,7 +33,7 @@ export default function Inbox() {
   }, [isAuthenticated, isLoading, toast]);
 
   const { data: orders } = useQuery<Order[]>({
-    queryKey: user?.isAdmin === 1 ? ["/api/admin/messages"] : ["/api/orders"],
+    queryKey: user?.role === 'super_admin' || user?.role === 'admin' ? ["/api/admin/messages"] : ["/api/orders"],
     enabled: isAuthenticated,
   });
 
@@ -113,7 +113,7 @@ export default function Inbox() {
             <Button variant="ghost" asChild data-testid="link-dashboard">
               <a href="/dashboard">My Orders</a>
             </Button>
-            {user?.isAdmin === 1 && (
+            {user?.role === 'super_admin' || user?.role === 'admin' && (
               <Button variant="ghost" asChild data-testid="link-admin">
                 <a href="/admin">Admin</a>
               </Button>
@@ -215,8 +215,8 @@ export default function Inbox() {
                           >
                             <div className={`flex gap-2 max-w-[70%] ${message.senderId === user?.id ? "flex-row-reverse" : "flex-row"}`}>
                               <Avatar className="w-8 h-8">
-                                <AvatarFallback className={message.isAdminMessage ? "bg-primary text-primary-foreground" : "bg-muted"}>
-                                  {message.isAdminMessage ? "A" : "U"}
+                                <AvatarFallback className={false ? "bg-primary text-primary-foreground" : "bg-muted"}>
+                                  {false ? "A" : "U"}
                                 </AvatarFallback>
                               </Avatar>
                               <div

@@ -52,7 +52,7 @@ export default function Admin() {
       setTimeout(() => {
         window.location.href = "/api/login";
       }, 500);
-    } else if (!isLoading && isAuthenticated && user?.isAdmin !== 1) {
+    } else if (!isLoading && isAuthenticated && user?.role !== 'super_admin' && user?.role !== 'admin') {
       toast({
         title: "Access Denied",
         description: "You don't have admin privileges",
@@ -66,10 +66,10 @@ export default function Admin() {
 
   const { data: orders, isLoading: ordersLoading } = useQuery<Order[]>({
     queryKey: ["/api/admin/orders"],
-    enabled: isAuthenticated && user?.isAdmin === 1,
+    enabled: isAuthenticated && user?.role === 'super_admin' || user?.role === 'admin',
   });
 
-  if (isLoading || !isAuthenticated || user?.isAdmin !== 1) {
+  if (isLoading || !isAuthenticated || user?.role !== 'super_admin' && user?.role !== 'admin') {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full" />

@@ -51,7 +51,7 @@ export default function Home() {
             >
               <a href="/inbox">Inbox</a>
             </Button>
-            {user?.isAdmin === 1 && (
+            {user?.role === 'super_admin' || user?.role === 'admin' && (
               <Button
                 variant="ghost"
                 asChild

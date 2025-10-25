@@ -1,0 +1,130 @@
+../client/src/lib/api.ts:12:16 - error TS2554: Expected 2 arguments, but got 1.
+
+12   localStorage.setItem("authToken");
+                  ~~~~~~~
+
+  ../node_modules/typescript/lib/lib.dom.d.ts:21419:26
+    21419     setItem(key: string, value: string): void;
+                                   ~~~~~~~~~~~~~
+    An argument for 'value' was not provided.
+
+../client/src/lib/api.ts:30:5 - error TS7053: Element implicitly has an 'any' type because expression of type '"Authorization"' can't be used to index type 'HeadersInit'.
+  Property 'Authorization' does not exist on type 'HeadersInit'.
+
+30     headers["Authorization"] = `Bearer ${token}`;
+       ~~~~~~~~~~~~~~~~~~~~~~~~
+
+../client/src/lib/api.ts:34:5 - error TS7053: Element implicitly has an 'any' type because expression of type '"Content-Type"' can't be used to index type 'HeadersInit'.
+  Property 'Content-Type' does not exist on type 'HeadersInit'.
+
+34     headers["Content-Type"] = "application/json";
+       ~~~~~~~~~~~~~~~~~~~~~~~
+
+../client/src/pages/admin.tsx:55:55 - error TS2339: Property 'isAdmin' does not exist on type '{ id: string; role: string; email: string; password: string; firstName: string | null; lastName: string | null; phone: string | null; profileImageUrl: string | null; verificationStatus: string; idPhotoPath: string | null; selfiePath: string | null; createdAt: Date | null; updatedAt: Date | null; }'.
+
+55     } else if (!isLoading && isAuthenticated && user?.isAdmin !== 1) {
+                                                         ~~~~~~~
+
+../client/src/pages/admin.tsx:69:39 - error TS2339: Property 'isAdmin' does not exist on type '{ id: string; role: string; email: string; password: string; firstName: string | null; lastName: string | null; phone: string | null; profileImageUrl: string | null; verificationStatus: string; idPhotoPath: string | null; selfiePath: string | null; createdAt: Date | null; updatedAt: Date | null; }'.
+
+69     enabled: isAuthenticated && user?.isAdmin === 1,
+                                         ~~~~~~~
+
+../client/src/pages/admin.tsx:72:46 - error TS2339: Property 'isAdmin' does not exist on type '{ id: string; role: string; email: string; password: string; firstName: string | null; lastName: string | null; phone: string | null; profileImageUrl: string | null; verificationStatus: string; idPhotoPath: string | null; selfiePath: string | null; createdAt: Date | null; updatedAt: Date | null; }'.
+
+72   if (isLoading || !isAuthenticated || user?.isAdmin !== 1) {
+                                                ~~~~~~~
+
+../client/src/pages/dashboard.tsx:81:20 - error TS2339: Property 'isAdmin' does not exist on type '{ id: string; role: string; email: string; password: string; firstName: string | null; lastName: string | null; phone: string | null; profileImageUrl: string | null; verificationStatus: string; idPhotoPath: string | null; selfiePath: string | null; createdAt: Date | null; updatedAt: Date | null; }'.
+
+81             {user?.isAdmin === 1 && (
+                      ~~~~~~~
+
+../client/src/pages/home.tsx:54:20 - error TS2339: Property 'isAdmin' does not exist on type '{ id: string; role: string; email: string; password: string; firstName: string | null; lastName: string | null; phone: string | null; profileImageUrl: string | null; verificationStatus: string; idPhotoPath: string | null; selfiePath: string | null; createdAt: Date | null; updatedAt: Date | null; }'.
+
+54             {user?.isAdmin === 1 && (
+                      ~~~~~~~
+
+../client/src/pages/inbox.tsx:36:21 - error TS2339: Property 'isAdmin' does not exist on type '{ id: string; role: string; email: string; password: string; firstName: string | null; lastName: string | null; phone: string | null; profileImageUrl: string | null; verificationStatus: string; idPhotoPath: string | null; selfiePath: string | null; createdAt: Date | null; updatedAt: Date | null; }'.
+
+36     queryKey: user?.isAdmin === 1 ? ["/api/admin/messages"] : ["/api/orders"],
+                       ~~~~~~~
+
+../client/src/pages/inbox.tsx:116:20 - error TS2339: Property 'isAdmin' does not exist on type '{ id: string; role: string; email: string; password: string; firstName: string | null; lastName: string | null; phone: string | null; profileImageUrl: string | null; verificationStatus: string; idPhotoPath: string | null; selfiePath: string | null; createdAt: Date | null; updatedAt: Date | null; }'.
+
+116             {user?.isAdmin === 1 && (
+                       ~~~~~~~
+
+../client/src/pages/inbox.tsx:218:68 - error TS2339: Property 'isAdminMessage' does not exist on type '{ id: string; content: string; createdAt: Date | null; orderId: string | null; senderId: string; receiverId: string | null; mediaType: string | null; mediaPath: string | null; conversationType: string; isRead: boolean | null; }'.
+
+218                                 <AvatarFallback className={message.isAdminMessage ? "bg-primary text-primary-foreground" : "bg-muted"}>
+                                                                       ~~~~~~~~~~~~~~
+
+../client/src/pages/inbox.tsx:219:44 - error TS2339: Property 'isAdminMessage' does not exist on type '{ id: string; content: string; createdAt: Date | null; orderId: string | null; senderId: string; receiverId: string | null; mediaType: string | null; mediaPath: string | null; conversationType: string; isRead: boolean | null; }'.
+
+219                                   {message.isAdminMessage ? "A" : "U"}
+                                               ~~~~~~~~~~~~~~
+
+auth.ts:17:14 - error TS2769: No overload matches this call.
+  Overload 1 of 5, '(payload: string | object | Buffer, secretOrPrivateKey: null, options?: (SignOptions & { algorithm: "none"; }) | undefined): string', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type 'null'.
+  Overload 2 of 5, '(payload: string | object | Buffer, secretOrPrivateKey: Secret | PrivateKeyInput | JsonWebKeyInput, options?: SignOptions | undefined): string', gave the following error.
+    Type 'string' is not assignable to type 'number | StringValue | undefined'.
+  Overload 3 of 5, '(payload: string | object | Buffer, secretOrPrivateKey: Secret | PrivateKeyInput | JsonWebKeyInput, callback: SignCallback): void', gave the following error.
+    Object literal may only specify known properties, and 'expiresIn' does not exist in type 'SignCallback'.
+
+17   return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
+                ~~~~
+
+
+replitAuth.ts:63:28 - error TS2345: Argument of type '{ id: any; email: any; firstName: any; lastName: any; profileImageUrl: any; role: string; verificationStatus: string; }' is not assignable to parameter of type '{ email: string; password: string; id?: string | undefined; role?: string | undefined; firstName?: string | null | undefined; lastName?: string | null | undefined; phone?: string | null | undefined; ... 5 more ...; updatedAt?: Date | ... 1 more ... | undefined; }'.
+  Property 'password' is missing in type '{ id: any; email: any; firstName: any; lastName: any; profileImageUrl: any; role: string; verificationStatus: string; }' but required in type '{ email: string; password: string; id?: string | undefined; role?: string | undefined; firstName?: string | null | undefined; lastName?: string | null | undefined; phone?: string | null | undefined; ... 5 more ...; updatedAt?: Date | ... 1 more ... | undefined; }'.
+
+ 63   await storage.upsertUser({
+                               ~
+ 64     id: claims["sub"],
+    ~~~~~~~~~~~~~~~~~~~~~~
+... 
+ 70     verificationStatus: existingUser?.verificationStatus || "pending",
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 71   });
+    ~~~
+
+routes.ts:141:32 - error TS2345: Argument of type '{ id: any; idPhotoPath: string; selfiePath: string; verificationStatus: string; }' is not assignable to parameter of type '{ email: string; password: string; id?: string | undefined; role?: string | undefined; firstName?: string | null | undefined; lastName?: string | null | undefined; phone?: string | null | undefined; ... 5 more ...; updatedAt?: Date | ... 1 more ... | undefined; }'.
+  Type '{ id: any; idPhotoPath: string; selfiePath: string; verificationStatus: string; }' is missing the following properties from type '{ email: string; password: string; id?: string | undefined; role?: string | undefined; firstName?: string | null | undefined; lastName?: string | null | undefined; phone?: string | null | undefined; ... 5 more ...; updatedAt?: Date | ... 1 more ... | undefined; }': email, password
+
+141       await storage.upsertUser({
+                                   ~
+142         id: userId,
+    ~~~~~~~~~~~~~~~~~~~
+... 
+145         verificationStatus: "pending",
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+146       });
+    ~~~~~~~
+
+
+Found 15 errors in 8 files.
+
+Errors  Files
+     3  ../client/src/lib/api.ts:12
+     3  ../client/src/pages/admin.tsx:55
+     1  ../client/src/pages/dashboard.tsx:81
+     1  ../client/src/pages/home.tsx:54
+     4  ../client/src/pages/inbox.tsx:36
+     1  auth.ts:17
+     1  replitAuth.ts:63
+     1  routes.ts:141
+root@srv1078131:/var/www/tuma-africa/server# node dist/server.js
+node:internal/modules/cjs/loader:1143
+  throw err;
+  ^
+
+Error: Cannot find module '/var/www/tuma-africa/server/dist/server.js'
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1140:15)
+    at Module._load (node:internal/modules/cjs/loader:981:27)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:128:12)
+    at node:internal/main/run_main_module:28:49 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}

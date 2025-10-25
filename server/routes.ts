@@ -138,8 +138,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const idPhotoPath = `/uploads/verification/${files.idPhoto[0].filename}`;
       const selfiePath = `/uploads/verification/${files.selfie[0].filename}`;
 
+      // Get existing user to preserve other fields
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
       await storage.upsertUser({
-        id: userId,
+        ...user,
         idPhotoPath,
         selfiePath,
         verificationStatus: "pending",

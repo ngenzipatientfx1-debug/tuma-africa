@@ -78,7 +78,7 @@ export default function Dashboard() {
                 Inbox
               </a>
             </Button>
-            {user?.isAdmin === 1 && (
+            {user?.role === 'super_admin' || user?.role === 'admin' && (
               <Button variant="ghost" asChild data-testid="link-admin">
                 <a href="/admin">Admin</a>
               </Button>

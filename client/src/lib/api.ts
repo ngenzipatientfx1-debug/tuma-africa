@@ -9,7 +9,6 @@ export function getAuthToken(): string | null {
 
 // Set token in localStorage
 export function setAuthToken(token: string): void {
-  localStorage.setItem("authToken");
   localStorage.setItem("authToken", token);
 }
 
@@ -22,8 +21,8 @@ export function clearAuthToken(): void {
 export async function apiFetch(endpoint: string, options: RequestInit = {}): Promise<Response> {
   const token = getAuthToken();
   
-  const headers: HeadersInit = {
-    ...options.headers,
+  const headers: Record<string, string> = {
+    ...(options.headers as Record<string, string>),
   };
 
   if (token) {
