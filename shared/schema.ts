@@ -28,7 +28,8 @@ export const sessions = pgTable(
 // User roles: user, employee, admin, super_admin
 export const users = pgTable("users", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  email: varchar("email").unique(),
+  email: varchar("email").unique().notNull(),
+  password: varchar("password").notNull(), // Hashed password for authentication
   firstName: varchar("first_name"),
   lastName: varchar("last_name"),
   phone: varchar("phone"),

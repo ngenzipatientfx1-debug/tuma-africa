@@ -1,7 +1,8 @@
 import type { Express, RequestHandler } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { setupAuth, isAuthenticated } from "./replitAuth";
+import { isAuthenticated, hasRole, isVerified } from "./auth";
+import authRoutes from "./routes/auth.routes";
 import multer from "multer";
 import path from "path";
 import { randomUUID } from "crypto";
@@ -101,53 +102,12 @@ const compressorUpload = multer({
 });
 
 // ============================================
-// ROLE-BASED MIDDLEWARE
+// ROUTE REGISTRATION
 // ============================================
 
-const hasRole = (...roles: string[]): RequestHandler => {
-  return async (req: any, res, next) => {
-    try {
-      const userId = req.user?.claims?.sub;
-      if (!userId) {
-        return res.status(401).json({ message: "Unauthorized" });
-      }
-
-      const user = await storage.getUser(userId);
-      if (!user || !roles.includes(user.role)) {
-        return res.status(403).json({ message: `Access denied. Required roles: ${roles.join(", ")}` });
-      }
-
-      req.userRole = user.role;
-      next();
-    } catch (error) {
-      console.error("Error checking user role:", error);
-      res.status(500).json({ message: "Failed to verify access" });
-    }
-  };
-};
-
-const isVerified: RequestHandler = async (req: any, res, next) => {
-  try {
-    const userId = req.user?.claims?.sub;
-    if (!userId) {
-      return res.status(401).json({ message: "Unauthorized" });
-    }
-
-    const user = await storage.getUser(userId);
-    if (user?.verificationStatus !== "verified") {
-      return res.status(403).json({ message: "Account verification required" });
-    }
-
-    next();
-  } catch (error) {
-    console.error("Error checking verification status:", error);
-    res.status(500).json({ message: "Failed to verify account status" });
-  }
-};
-
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Auth middleware
-  await setupAuth(app);
+  // Register auth routes (login, register, etc.)
+  app.use("/api/auth", authRoutes);
   
   // Create upload directories
   await fs.mkdir("uploads/screenshots", { recursive: true });
@@ -158,20 +118,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
   await fs.mkdir("uploads/companies", { recursive: true });
   await fs.mkdir("uploads/social", { recursive: true });
 
-  // ============================================
-  // AUTH ROUTES
-  // ============================================
-  
-  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
-    try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-      res.json(user);
-    } catch (error) {
-      console.error("Error fetching user:", error);
-      res.status(500).json({ message: "Failed to fetch user" });
-    }
-  });
 
   // ============================================
   // USER VERIFICATION ROUTES
@@ -182,7 +128,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     { name: "selfie", maxCount: 1 }
   ]), async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const files = req.files as { [fieldname: string]: Express.Multer.File[] };
       
       if (!files.idPhoto || !files.selfie) {
@@ -212,7 +158,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   app.post("/api/orders", isAuthenticated, isVerified, screenshotUpload.single("screenshot"), async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const { productLink, productName, quantity, variation, specifications, notes, shippingAddress } = req.body;
 
       const orderData: any = {
@@ -240,7 +186,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/orders", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const orders = await storage.getUserOrders(userId);
       res.json(orders);
     } catch (error) {
@@ -251,7 +197,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/orders/:id", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const user = await storage.getUser(userId);
       const order = await storage.getOrder(req.params.id);
       
@@ -282,7 +228,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   app.get("/api/employee/orders", isAuthenticated, hasRole("employee", "admin", "super_admin"), async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const user = await storage.getUser(userId);
       
       let orders;
@@ -301,7 +247,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/employee/orders/:id/approve", isAuthenticated, hasRole("employee", "admin", "super_admin"), async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const { assignedEmployeeId } = req.body;
       
       const order = await storage.approveOrder(req.params.id, userId, assignedEmployeeId);
@@ -314,7 +260,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/employee/orders/:id/decline", isAuthenticated, hasRole("employee", "admin", "super_admin"), async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const { reason } = req.body;
       
       if (!reason) {
@@ -331,7 +277,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.patch("/api/employee/orders/:id/stage", isAuthenticated, hasRole("employee", "admin", "super_admin"), async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const { stage, note } = req.body;
       
       const validStages = ["purchased_from_china", "in_warehouse", "in_ship", "in_rwanda", "delivered"];
@@ -582,7 +528,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   app.post("/api/messages", isAuthenticated, chatMediaUpload.single("media"), async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const { orderId, content, conversationType, receiverId } = req.body;
       
       const messageData: any = {
@@ -615,7 +561,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/messages/:orderId", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const user = await storage.getUser(userId);
       const { orderId } = req.params;
 
@@ -644,7 +590,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/messages/employee-admin/:userId?", isAuthenticated, hasRole("employee", "admin", "super_admin"), async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const { userId: targetUserId } = req.params;
       
       const messages = await storage.getEmployeeAdminMessages(userId, targetUserId);
