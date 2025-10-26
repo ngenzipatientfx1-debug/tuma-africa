@@ -1,0 +1,75 @@
+root@srv1078131:/var/www/tuma-africa# cd ../server
+npx tsc
+-bash: cd: ../server: No such file or directory
+root@srv1078131:/var/www/tuma-africa# cd ../server
+npx tsc
+-bash: cd: ../server: No such file or directory
+root@srv1078131:/var/www/tuma-africa# npx tsc
+root@srv1078131:/var/www/tuma-africa# cd ./server 
+root@srv1078131:/var/www/tuma-africa/server# npx tsc
+root@srv1078131:/var/www/tuma-africa/server# node dist/server.js
+node:internal/modules/cjs/loader:1143
+  throw err;
+  ^
+
+Error: Cannot find module '/var/www/tuma-africa/server/dist/server.js'
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1140:15)
+    at Module._load (node:internal/modules/cjs/loader:981:27)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:128:12)
+    at node:internal/main/run_main_module:28:49 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}
+
+Node.js v18.20.8
+root@srv1078131:/var/www/tuma-africa/server# cd ..
+root@srv1078131:/var/www/tuma-africa# node dist/server.js
+node:internal/modules/cjs/loader:1143
+  throw err;
+  ^
+
+Error: Cannot find module '/var/www/tuma-africa/dist/server.js'
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1140:15)
+    at Module._load (node:internal/modules/cjs/loader:981:27)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:128:12)
+    at node:internal/main/run_main_module:28:49 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}
+
+Node.js v18.20.8
+root@srv1078131:/var/www/tuma-africa# ls dist
+index.js  public
+root@srv1078131:/var/www/tuma-africa# ls server
+auth.ts  db.ts  index.ts  replitAuth.ts  routes  routes.ts  storage.ts  vite.ts
+root@srv1078131:/var/www/tuma-africa# npx tsc
+root@srv1078131:/var/www/tuma-africa# node dist/index.js
+# or
+node dist/app.js
+file:///var/www/tuma-africa/dist/index.js:226
+  throw new Error(
+        ^
+
+Error: DATABASE_URL must be set. Did you forget to provision a database?
+    at file:///var/www/tuma-africa/dist/index.js:226:9
+    at ModuleJob.run (node:internal/modules/esm/module_job:195:25)
+    at async ModuleLoader.import (node:internal/modules/esm/loader:337:24)
+    at async loadESM (node:internal/process/esm_loader:34:7)
+    at async handleMainPromise (node:internal/modules/run_main:106:12)
+
+Node.js v18.20.8
+node:internal/modules/cjs/loader:1143
+  throw err;
+  ^
+
+Error: Cannot find module '/var/www/tuma-africa/dist/app.js'
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1140:15)
+    at Module._load (node:internal/modules/cjs/loader:981:27)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:128:12)
+    at node:internal/main/run_main_module:28:49 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}
+
+Node.js v18.20.8
+root@srv1078131:/var/www/tuma-africa# 
