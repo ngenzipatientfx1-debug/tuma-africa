@@ -2,11 +2,12 @@
 
 # ===========================================
 # Tuma-Africa - Supabase Setup Script
+# Europe Region (eu-central-1)
 # ===========================================
 
 set -e
 
-echo "🚀 Setting up Tuma-Africa with Supabase..."
+echo "🚀 Setting up Tuma-Africa with Supabase (Europe)..."
 echo "=========================================="
 
 # Colors
@@ -14,18 +15,19 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m'
 
-# Create .env file
+# Create .env file with Supabase pooler connection
 echo "📝 Creating .env file with Supabase credentials..."
 
 cat > .env << 'EOF'
 # ===========================================
 # Tuma-Africa Link Cargo - Supabase Production
+# Region: Europe (eu-central-1)
 # ===========================================
 
 # ===========================================
-# SUPABASE DATABASE
+# SUPABASE DATABASE (Pooler Connection - IPv4)
 # ===========================================
-DATABASE_URL=postgresql://postgres:Hubert@123irere@db.zwembeykottcmwzfpyhs.supabase.co:5432/postgres
+DATABASE_URL=postgresql://postgres.zwembeykottcmwzfpyhs:Hubert%40123irere@aws-0-eu-central-1.pooler.supabase.com:5432/postgres
 
 # ===========================================
 # AUTHENTICATION SECRETS
@@ -53,7 +55,7 @@ UPLOAD_DIR=./uploads
 FRONTEND_URL=http://localhost:5000
 EOF
 
-echo -e "${GREEN}✓${NC} .env file created"
+echo -e "${GREEN}✓${NC} .env file created with Europe pooler connection"
 
 # Create upload directories
 echo ""
@@ -88,7 +90,9 @@ echo -e "${GREEN}✅ Supabase Setup Complete!${NC}"
 echo "=========================================="
 echo ""
 echo "📊 Your database is now hosted on Supabase:"
-echo "   https://zwembeykottcmwzfpyhs.supabase.co"
+echo "   Region: Europe (Frankfurt)"
+echo "   Project: zwembeykottcmwzfpyhs"
+echo "   Dashboard: https://zwembeykottcmwzfpyhs.supabase.co"
 echo ""
 echo "🎯 Next steps:"
 echo "   1. Start with PM2:  pm2 start ecosystem.config.cjs"
@@ -98,6 +102,7 @@ echo "   4. Test app:        curl http://localhost:5000"
 echo ""
 echo "🌐 View your database:"
 echo "   Supabase Dashboard → Table Editor"
+echo "   https://supabase.com/dashboard/project/zwembeykottcmwzfpyhs"
 echo ""
 echo "🎉 Your app is ready to run!"
 echo ""
