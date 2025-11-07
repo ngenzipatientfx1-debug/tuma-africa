@@ -3,7 +3,7 @@
 ## Overview
 A beautiful, modern proxy-shopping platform connecting African buyers with Chinese e-commerce sites. The platform provides a seamless experience for users to purchase products from China and track their shipments across Africa.
 
-## Current State (October 2025)
+## Current State (November 2025)
 - ✅ Complete authentication system with Replit Auth
 - ✅ Animated landing page with hero section
 - ✅ Smart link paste interface with smooth transitions
@@ -14,6 +14,7 @@ A beautiful, modern proxy-shopping platform connecting African buyers with Chine
 - ✅ Dark mode support with theme toggle
 - ✅ PostgreSQL database with full CRUD operations
 - ✅ File upload system for product screenshots
+- ✅ **MAJOR UPDATE**: Migrated from Drizzle ORM to Prisma ORM (November 7, 2025)
 
 ## Project Architecture
 
@@ -27,16 +28,22 @@ A beautiful, modern proxy-shopping platform connecting African buyers with Chine
 
 ### Backend (Express + TypeScript)
 - **Authentication**: Replit Auth (OpenID Connect) with session management
-- **Database**: PostgreSQL via Drizzle ORM
+- **Database**: PostgreSQL via **Prisma ORM** (migrated from Drizzle on Nov 7, 2025)
 - **File Upload**: Multer with 150KB limit for screenshots
 - **API**: RESTful endpoints for orders, messages, and admin functions
 
-### Database Schema
-- **users**: User profiles with admin flag
+### Database Schema (Prisma)
+All 10 tables defined in `prisma/schema.prisma`:
+- **users**: User profiles with role-based access (user, employee, admin, super_admin)
 - **sessions**: Session storage for Replit Auth
-- **orders**: Product orders with tracking information
-- **orderStatusHistory**: Timeline of status changes
-- **messages**: Chat messages between users and support
+- **orders**: Product orders with tracking information and approval workflow
+- **order_status_history**: Timeline of status changes with notes
+- **messages**: Chat messages between users and support with media attachments
+- **hero_content**: Homepage hero section content (Super Admin managed)
+- **about_us**: About Us page content (Super Admin managed)
+- **companies**: Trusted companies/partners display (Super Admin managed)
+- **social_media_links**: Social media links in footer (Super Admin managed)
+- **terms_policy**: Terms of Service and Privacy Policy content (Super Admin managed)
 
 ## User Preferences
 - Clean, minimalist design with purposeful animations
@@ -60,7 +67,18 @@ A beautiful, modern proxy-shopping platform connecting African buyers with Chine
 4. **Dashboard Analytics**: Quick stats on order volumes and status distribution
 
 ## Recent Changes
-- Initial implementation of complete platform (October 2025)
+
+### November 7, 2025 - Prisma ORM Migration
+- ✅ **Complete migration from Drizzle ORM to Prisma ORM** (production-ready)
+- ✅ Rewrote all 45+ database operations in `server/storage.ts`
+- ✅ Created comprehensive Prisma schema with all 10 tables and relations
+- ✅ Fixed all upsert methods to properly handle identifier fields
+- ✅ Using `UncheckedCreateInput` for scalar foreign key support
+- ✅ Made password field optional (Replit Auth uses OIDC, no passwords)
+- ✅ Successfully pushed schema to PostgreSQL database
+- ✅ App running and tested with Prisma backend
+
+### October 2025 - Initial Platform Implementation
 - Implemented Replit Auth for user authentication
 - Created visual order tracking timeline
 - Built admin dashboard with order management
@@ -77,9 +95,9 @@ A beautiful, modern proxy-shopping platform connecting African buyers with Chine
 ## Technical Stack
 - **Frontend**: React 18, TypeScript, Tailwind CSS, Framer Motion, TanStack Query
 - **Backend**: Express, TypeScript, Passport.js, Multer
-- **Database**: PostgreSQL (Neon), Drizzle ORM
+- **Database**: PostgreSQL (Neon), **Prisma ORM v6.19.0**
 - **Authentication**: Replit Auth (OpenID Connect)
-- **Deployment**: Replit (development and production)
+- **Deployment**: Replit (development), Hostinger VPS (production planned)
 
 ## Environment Variables
 - DATABASE_URL: PostgreSQL connection string
