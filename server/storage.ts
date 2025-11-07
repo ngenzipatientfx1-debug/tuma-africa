@@ -98,10 +98,11 @@ export class DatabaseStorage implements IStorage {
     if (!userData.id) {
       throw new Error("User ID is required for upsert");
     }
+    const { id, ...updateData } = userData;
     return await prisma.user.upsert({
-      where: { id: userData.id },
+      where: { id },
       update: {
-        ...userData,
+        ...updateData,
         updatedAt: new Date(),
       },
       create: userData
@@ -403,10 +404,11 @@ export class DatabaseStorage implements IStorage {
   
   async upsertHeroContent(contentData: Partial<InsertHeroContent> & { id?: string }): Promise<HeroContent> {
     if (contentData.id) {
+      const { id, ...updateData } = contentData;
       return await prisma.heroContent.update({
-        where: { id: contentData.id },
+        where: { id },
         data: {
-          ...contentData,
+          ...updateData,
           updatedAt: new Date()
         }
       });
@@ -432,10 +434,11 @@ export class DatabaseStorage implements IStorage {
     const existing = await this.getAboutUs();
     
     if (existing) {
+      const { id, ...updateData } = contentData;
       return await prisma.aboutUs.update({
         where: { id: existing.id },
         data: {
-          ...contentData,
+          ...updateData,
           updatedAt: new Date()
         }
       });
@@ -455,9 +458,10 @@ export class DatabaseStorage implements IStorage {
   
   async upsertCompany(companyData: Partial<InsertCompany> & { id?: string }): Promise<Company> {
     if (companyData.id) {
+      const { id, ...updateData } = companyData;
       return await prisma.company.update({
-        where: { id: companyData.id },
-        data: companyData
+        where: { id },
+        data: updateData
       });
     } else {
       return await prisma.company.create({
@@ -481,9 +485,10 @@ export class DatabaseStorage implements IStorage {
   
   async upsertSocialMediaLink(linkData: Partial<InsertSocialMediaLink> & { id?: string }): Promise<SocialMediaLink> {
     if (linkData.id) {
+      const { id, ...updateData } = linkData;
       return await prisma.socialMediaLink.update({
-        where: { id: linkData.id },
-        data: linkData
+        where: { id },
+        data: updateData
       });
     } else {
       return await prisma.socialMediaLink.create({
@@ -509,10 +514,11 @@ export class DatabaseStorage implements IStorage {
     const existing = await this.getTermsPolicy(policyData.type);
     
     if (existing) {
+      const { id, type, ...updateData } = policyData;
       return await prisma.termsPolicy.update({
         where: { id: existing.id },
         data: {
-          ...policyData,
+          ...updateData,
           updatedAt: new Date()
         }
       });
