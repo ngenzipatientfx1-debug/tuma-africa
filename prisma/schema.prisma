@@ -25,7 +25,7 @@ model Session {
 model User {
   id                   String    @id @default(dbgenerated("gen_random_uuid()")) @db.VarChar
   email                String    @unique @db.VarChar
-  password             String    @db.VarChar // Hashed password
+  password             String?   @db.VarChar // Optional - using Replit Auth (OIDC)
   firstName            String?   @map("first_name") @db.VarChar
   lastName             String?   @map("last_name") @db.VarChar
   phone                String?   @db.VarChar
