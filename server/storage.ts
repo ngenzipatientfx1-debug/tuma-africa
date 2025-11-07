@@ -1,34 +1,16 @@
-import {
-  users,
-  orders,
-  messages,
-  orderStatusHistory,
-  heroContent,
-  aboutUs,
-  companies,
-  socialMediaLinks,
-  termsPolicy,
-  type User,
-  type UpsertUser,
-  type Order,
-  type InsertOrder,
-  type Message,
-  type InsertMessage,
-  type OrderStatusHistory,
-  type InsertOrderStatusHistory,
-  type HeroContent,
-  type InsertHeroContent,
-  type AboutUs,
-  type InsertAboutUs,
-  type Company,
-  type InsertCompany,
-  type SocialMediaLink,
-  type InsertSocialMediaLink,
-  type TermsPolicy,
-  type InsertTermsPolicy,
-} from "@shared/schema";
-import { db } from "./db";
-import { eq, desc, and, or, inArray } from "drizzle-orm";
+import { prisma } from "./db";
+import type { Prisma, User, Order, OrderStatusHistory, Message, HeroContent, AboutUs, Company, SocialMediaLink, TermsPolicy } from "@prisma/client";
+
+// Type definitions for insert operations (using Unchecked for scalar FK support)
+export type UpsertUser = Prisma.UserUncheckedCreateInput;
+export type InsertOrder = Prisma.OrderUncheckedCreateInput;
+export type InsertOrderStatusHistory = Prisma.OrderStatusHistoryUncheckedCreateInput;
+export type InsertMessage = Prisma.MessageUncheckedCreateInput;
+export type InsertHeroContent = Prisma.HeroContentUncheckedCreateInput;
+export type InsertAboutUs = Prisma.AboutUsUncheckedCreateInput;
+export type InsertCompany = Prisma.CompanyUncheckedCreateInput;
+export type InsertSocialMediaLink = Prisma.SocialMediaLinkUncheckedCreateInput;
+export type InsertTermsPolicy = Prisma.TermsPolicyUncheckedCreateInput;
 
 export interface IStorage {
   // User operations
@@ -69,22 +51,22 @@ export interface IStorage {
   
   // Homepage content management (Super Admin)
   getHeroContent(): Promise<HeroContent[]>;
-  upsertHeroContent(content: InsertHeroContent): Promise<HeroContent>;
+  upsertHeroContent(content: Partial<InsertHeroContent> & { id?: string }): Promise<HeroContent>;
   deleteHeroContent(id: string): Promise<void>;
   
   getAboutUs(): Promise<AboutUs | undefined>;
-  upsertAboutUs(content: InsertAboutUs): Promise<AboutUs>;
+  upsertAboutUs(content: Partial<InsertAboutUs> & { id?: string }): Promise<AboutUs>;
   
   getCompanies(): Promise<Company[]>;
-  upsertCompany(company: InsertCompany): Promise<Company>;
+  upsertCompany(company: Partial<InsertCompany> & { id?: string }): Promise<Company>;
   deleteCompany(id: string): Promise<void>;
   
   getSocialMediaLinks(): Promise<SocialMediaLink[]>;
-  upsertSocialMediaLink(link: InsertSocialMediaLink): Promise<SocialMediaLink>;
+  upsertSocialMediaLink(link: Partial<InsertSocialMediaLink> & { id?: string }): Promise<SocialMediaLink>;
   deleteSocialMediaLink(id: string): Promise<void>;
   
   getTermsPolicy(type: string): Promise<TermsPolicy | undefined>;
-  upsertTermsPolicy(policy: InsertTermsPolicy): Promise<TermsPolicy>;
+  upsertTermsPolicy(policy: Partial<InsertTermsPolicy> & { type: string }): Promise<TermsPolicy>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -93,62 +75,69 @@ export class DatabaseStorage implements IStorage {
   // ============================================
   
   async getUser(id: string): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.id, id));
-    return user;
+    const user = await prisma.user.findUnique({
+      where: { id }
+    });
+    return user ?? undefined;
   }
   
   async getUserByEmail(email: string): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.email, email));
-    return user;
+    const user = await prisma.user.findUnique({
+      where: { email }
+    });
+    return user ?? undefined;
   }
 
   async createUser(userData: Omit<UpsertUser, 'id'>): Promise<User> {
-    const [user] = await db
-      .insert(users)
-      .values(userData)
-      .returning();
-    return user;
+    return await prisma.user.create({
+      data: userData
+    });
   }
 
   async upsertUser(userData: UpsertUser): Promise<User> {
-    const [user] = await db
-      .insert(users)
-      .values(userData)
-      .onConflictDoUpdate({
-        target: users.id,
-        set: {
-          ...userData,
-          updatedAt: new Date(),
-        },
-      })
-      .returning();
-    return user;
+    if (!userData.id) {
+      throw new Error("User ID is required for upsert");
+    }
+    return await prisma.user.upsert({
+      where: { id: userData.id },
+      update: {
+        ...userData,
+        updatedAt: new Date(),
+      },
+      create: userData
+    });
   }
   
   async getAllUsers(): Promise<User[]> {
-    return db.select().from(users).orderBy(desc(users.createdAt));
+    return await prisma.user.findMany({
+      orderBy: { createdAt: 'desc' }
+    });
   }
   
   async getPendingVerifications(): Promise<User[]> {
-    return db.select().from(users).where(eq(users.verificationStatus, "pending"));
+    return await prisma.user.findMany({
+      where: { verificationStatus: "pending" }
+    });
   }
   
   async updateUserVerification(userId: string, status: string): Promise<User> {
-    const [user] = await db
-      .update(users)
-      .set({ verificationStatus: status, updatedAt: new Date() })
-      .where(eq(users.id, userId))
-      .returning();
-    return user;
+    return await prisma.user.update({
+      where: { id: userId },
+      data: { 
+        verificationStatus: status,
+        updatedAt: new Date()
+      }
+    });
   }
   
   async updateUserRole(userId: string, role: string): Promise<User> {
-    const [user] = await db
-      .update(users)
-      .set({ role, updatedAt: new Date() })
-      .where(eq(users.id, userId))
-      .returning();
-    return user;
+    return await prisma.user.update({
+      where: { id: userId },
+      data: { 
+        role,
+        updatedAt: new Date()
+      }
+    });
   }
 
   // ============================================
@@ -156,244 +145,249 @@ export class DatabaseStorage implements IStorage {
   // ============================================
   
   async createOrder(orderData: InsertOrder): Promise<Order> {
-    const [order] = await db.insert(orders).values({
-      ...orderData,
-      status: "pending",
-    }).returning();
-    
-    // Create initial status history
-    await this.createOrderStatusHistory({
-      orderId: order.id,
-      stage: "pending",
-      note: "Order submitted",
+    return await prisma.$transaction(async (tx) => {
+      const order = await tx.order.create({
+        data: {
+          ...orderData,
+          status: "pending",
+        }
+      });
+      
+      // Create initial status history
+      await tx.orderStatusHistory.create({
+        data: {
+          orderId: order.id,
+          stage: "pending",
+          note: "Order submitted",
+        }
+      });
+      
+      return order;
     });
-    
-    return order;
   }
 
   async getOrder(id: string): Promise<Order | undefined> {
-    const [order] = await db.select().from(orders).where(eq(orders.id, id));
-    return order;
+    const order = await prisma.order.findUnique({
+      where: { id }
+    });
+    return order ?? undefined;
   }
 
   async getUserOrders(userId: string): Promise<Order[]> {
-    return db
-      .select()
-      .from(orders)
-      .where(eq(orders.userId, userId))
-      .orderBy(desc(orders.createdAt));
+    return await prisma.order.findMany({
+      where: { userId },
+      orderBy: { createdAt: 'desc' }
+    });
   }
 
   async getAllOrders(): Promise<Order[]> {
-    return db.select().from(orders).orderBy(desc(orders.createdAt));
+    return await prisma.order.findMany({
+      orderBy: { createdAt: 'desc' }
+    });
   }
   
   async getEmployeeOrders(employeeId: string): Promise<Order[]> {
-    return db
-      .select()
-      .from(orders)
-      .where(eq(orders.assignedEmployeeId, employeeId))
-      .orderBy(desc(orders.createdAt));
+    return await prisma.order.findMany({
+      where: { assignedEmployeeId: employeeId },
+      orderBy: { createdAt: 'desc' }
+    });
   }
   
   async getPendingOrders(): Promise<Order[]> {
-    return db
-      .select()
-      .from(orders)
-      .where(eq(orders.status, "pending"))
-      .orderBy(desc(orders.createdAt));
+    return await prisma.order.findMany({
+      where: { status: "pending" },
+      orderBy: { createdAt: 'desc' }
+    });
   }
   
   async getApprovedOrders(): Promise<Order[]> {
-    return db
-      .select()
-      .from(orders)
-      .where(eq(orders.status, "approved"))
-      .orderBy(desc(orders.createdAt));
+    return await prisma.order.findMany({
+      where: { status: "approved" },
+      orderBy: { createdAt: 'desc' }
+    });
   }
   
   async getDeclinedOrders(userId: string): Promise<Order[]> {
-    return db
-      .select()
-      .from(orders)
-      .where(and(
-        eq(orders.userId, userId),
-        eq(orders.status, "declined")
-      ))
-      .orderBy(desc(orders.createdAt));
+    return await prisma.order.findMany({
+      where: {
+        userId,
+        status: "declined"
+      },
+      orderBy: { createdAt: 'desc' }
+    });
   }
   
   async approveOrder(orderId: string, approvedBy: string, assignedEmployeeId?: string): Promise<Order> {
-    const updateData: any = {
-      status: "approved",
-      approvedBy,
-      updatedAt: new Date(),
-    };
-    
-    if (assignedEmployeeId) {
-      updateData.assignedEmployeeId = assignedEmployeeId;
-    }
-    
-    const [order] = await db
-      .update(orders)
-      .set(updateData)
-      .where(eq(orders.id, orderId))
-      .returning();
+    return await prisma.$transaction(async (tx) => {
+      const order = await tx.order.update({
+        where: { id: orderId },
+        data: {
+          status: "approved",
+          approvedBy,
+          assignedEmployeeId: assignedEmployeeId || undefined,
+          updatedAt: new Date(),
+        }
+      });
       
-    await this.createOrderStatusHistory({
-      orderId,
-      stage: "approved",
-      note: "Order approved",
-      updatedBy: approvedBy,
+      await tx.orderStatusHistory.create({
+        data: {
+          orderId,
+          stage: "approved",
+          note: "Order approved",
+          updatedBy: approvedBy,
+        }
+      });
+      
+      return order;
     });
-    
-    return order;
   }
   
   async declineOrder(orderId: string, declinedBy: string, reason: string): Promise<Order> {
-    const [order] = await db
-      .update(orders)
-      .set({
-        status: "declined",
-        declinedBy,
-        declineReason: reason,
-        updatedAt: new Date(),
-      })
-      .where(eq(orders.id, orderId))
-      .returning();
+    return await prisma.$transaction(async (tx) => {
+      const order = await tx.order.update({
+        where: { id: orderId },
+        data: {
+          status: "declined",
+          declinedBy,
+          declineReason: reason,
+          updatedAt: new Date(),
+        }
+      });
       
-    await this.createOrderStatusHistory({
-      orderId,
-      stage: "declined",
-      note: `Declined: ${reason}`,
-      updatedBy: declinedBy,
+      await tx.orderStatusHistory.create({
+        data: {
+          orderId,
+          stage: "declined",
+          note: `Declined: ${reason}`,
+          updatedBy: declinedBy,
+        }
+      });
+      
+      return order;
     });
-    
-    return order;
   }
   
   async updateOrderStage(orderId: string, stage: string, updatedBy: string, note?: string): Promise<Order> {
-    const [order] = await db
-      .update(orders)
-      .set({
-        orderStage: stage,
-        updatedAt: new Date(),
-      })
-      .where(eq(orders.id, orderId))
-      .returning();
+    return await prisma.$transaction(async (tx) => {
+      const order = await tx.order.update({
+        where: { id: orderId },
+        data: {
+          orderStage: stage,
+          updatedAt: new Date(),
+        }
+      });
       
-    await this.createOrderStatusHistory({
-      orderId,
-      stage,
-      note: note || `Stage updated to ${stage}`,
-      updatedBy,
+      await tx.orderStatusHistory.create({
+        data: {
+          orderId,
+          stage,
+          note: note || `Stage updated to ${stage}`,
+          updatedBy,
+        }
+      });
+      
+      return order;
     });
-    
-    return order;
   }
   
   async assignOrderToEmployee(orderId: string, employeeId: string): Promise<Order> {
-    const [order] = await db
-      .update(orders)
-      .set({
+    return await prisma.order.update({
+      where: { id: orderId },
+      data: {
         assignedEmployeeId: employeeId,
         updatedAt: new Date(),
-      })
-      .where(eq(orders.id, orderId))
-      .returning();
-    return order;
+      }
+    });
   }
   
   async updateOrderInternalNotes(orderId: string, notes: string): Promise<Order> {
-    const [order] = await db
-      .update(orders)
-      .set({
+    return await prisma.order.update({
+      where: { id: orderId },
+      data: {
         internalNotes: notes,
         updatedAt: new Date(),
-      })
-      .where(eq(orders.id, orderId))
-      .returning();
-    return order;
+      }
+    });
   }
 
   // ============================================
   // ORDER STATUS HISTORY
   // ============================================
   
-  async createOrderStatusHistory(historyData: InsertOrderStatusHistory): Promise<OrderStatusHistory> {
-    const [history] = await db.insert(orderStatusHistory).values(historyData).returning();
-    return history;
+  async createOrderStatusHistory(historyData: Omit<InsertOrderStatusHistory, 'order' | 'updater'> & { orderId: string }): Promise<OrderStatusHistory> {
+    return await prisma.orderStatusHistory.create({
+      data: historyData
+    });
   }
 
   async getOrderStatusHistory(orderId: string): Promise<OrderStatusHistory[]> {
-    return db
-      .select()
-      .from(orderStatusHistory)
-      .where(eq(orderStatusHistory.orderId, orderId))
-      .orderBy(desc(orderStatusHistory.createdAt));
+    return await prisma.orderStatusHistory.findMany({
+      where: { orderId },
+      orderBy: { createdAt: 'desc' }
+    });
   }
 
   // ============================================
   // MESSAGE OPERATIONS
   // ============================================
   
-  async createMessage(messageData: InsertMessage): Promise<Message> {
-    const [message] = await db.insert(messages).values(messageData).returning();
-    return message;
+  async createMessage(messageData: Omit<InsertMessage, 'sender' | 'order'> & { senderId: string }): Promise<Message> {
+    return await prisma.message.create({
+      data: messageData
+    });
   }
 
   async getOrderMessages(orderId: string): Promise<Message[]> {
-    return db
-      .select()
-      .from(messages)
-      .where(and(
-        eq(messages.orderId, orderId),
-        eq(messages.conversationType, "user_order")
-      ))
-      .orderBy(messages.createdAt);
+    return await prisma.message.findMany({
+      where: {
+        orderId,
+        conversationType: "user_order"
+      },
+      orderBy: { createdAt: 'asc' }
+    });
   }
   
   async getEmployeeAdminMessages(userId1: string, userId2?: string): Promise<Message[]> {
-    const conditions: any[] = [eq(messages.conversationType, "employee_admin")];
+    const where: Prisma.MessageWhereInput = {
+      conversationType: "employee_admin",
+    };
     
     if (userId2) {
-      conditions.push(
-        or(
-          and(eq(messages.senderId, userId1), eq(messages.receiverId!, userId2)),
-          and(eq(messages.senderId, userId2), eq(messages.receiverId!, userId1))
-        )
-      );
+      where.OR = [
+        { AND: [{ senderId: userId1 }, { receiverId: userId2 }] },
+        { AND: [{ senderId: userId2 }, { receiverId: userId1 }] }
+      ];
     } else {
-      conditions.push(
-        or(eq(messages.senderId, userId1), eq(messages.receiverId!, userId1))
-      );
+      where.OR = [
+        { senderId: userId1 },
+        { receiverId: userId1 }
+      ];
     }
     
-    return db
-      .select()
-      .from(messages)
-      .where(and(...conditions))
-      .orderBy(messages.createdAt);
+    return await prisma.message.findMany({
+      where,
+      orderBy: { createdAt: 'asc' }
+    });
   }
   
   async markMessagesAsRead(messageIds: string[]): Promise<void> {
     if (messageIds.length === 0) return;
     
-    await db
-      .update(messages)
-      .set({ isRead: true })
-      .where(inArray(messages.id, messageIds));
+    await prisma.message.updateMany({
+      where: {
+        id: { in: messageIds }
+      },
+      data: { isRead: true }
+    });
   }
   
   async getUserUnreadCount(userId: string): Promise<number> {
-    const result = await db
-      .select()
-      .from(messages)
-      .where(and(
-        eq(messages.receiverId!, userId),
-        eq(messages.isRead, false)
-      ));
-    return result.length;
+    return await prisma.message.count({
+      where: {
+        receiverId: userId,
+        isRead: false
+      }
+    });
   }
 
   // ============================================
@@ -401,126 +395,131 @@ export class DatabaseStorage implements IStorage {
   // ============================================
   
   async getHeroContent(): Promise<HeroContent[]> {
-    return db
-      .select()
-      .from(heroContent)
-      .where(eq(heroContent.isActive, true))
-      .orderBy(heroContent.displayOrder);
+    return await prisma.heroContent.findMany({
+      where: { isActive: true },
+      orderBy: { displayOrder: 'asc' }
+    });
   }
   
-  async upsertHeroContent(contentData: InsertHeroContent): Promise<HeroContent> {
-    if ('id' in contentData && contentData.id) {
-      const [content] = await db
-        .update(heroContent)
-        .set({ ...contentData, updatedAt: new Date() })
-        .where(eq(heroContent.id, contentData.id))
-        .returning();
-      return content;
+  async upsertHeroContent(contentData: Partial<InsertHeroContent> & { id?: string }): Promise<HeroContent> {
+    if (contentData.id) {
+      return await prisma.heroContent.update({
+        where: { id: contentData.id },
+        data: {
+          ...contentData,
+          updatedAt: new Date()
+        }
+      });
     } else {
-      const [content] = await db.insert(heroContent).values(contentData).returning();
-      return content;
+      return await prisma.heroContent.create({
+        data: contentData as Prisma.HeroContentCreateInput
+      });
     }
   }
   
   async deleteHeroContent(id: string): Promise<void> {
-    await db.delete(heroContent).where(eq(heroContent.id, id));
+    await prisma.heroContent.delete({
+      where: { id }
+    });
   }
   
   async getAboutUs(): Promise<AboutUs | undefined> {
-    const [content] = await db.select().from(aboutUs).limit(1);
-    return content;
+    const content = await prisma.aboutUs.findFirst();
+    return content ?? undefined;
   }
   
-  async upsertAboutUs(contentData: InsertAboutUs): Promise<AboutUs> {
+  async upsertAboutUs(contentData: Partial<InsertAboutUs> & { id?: string }): Promise<AboutUs> {
     const existing = await this.getAboutUs();
     
     if (existing) {
-      const [content] = await db
-        .update(aboutUs)
-        .set({ ...contentData, updatedAt: new Date() })
-        .where(eq(aboutUs.id, existing.id))
-        .returning();
-      return content;
+      return await prisma.aboutUs.update({
+        where: { id: existing.id },
+        data: {
+          ...contentData,
+          updatedAt: new Date()
+        }
+      });
     } else {
-      const [content] = await db.insert(aboutUs).values(contentData).returning();
-      return content;
+      return await prisma.aboutUs.create({
+        data: contentData as Prisma.AboutUsCreateInput
+      });
     }
   }
   
   async getCompanies(): Promise<Company[]> {
-    return db
-      .select()
-      .from(companies)
-      .where(eq(companies.isActive, true))
-      .orderBy(companies.displayOrder);
+    return await prisma.company.findMany({
+      where: { isActive: true },
+      orderBy: { displayOrder: 'asc' }
+    });
   }
   
-  async upsertCompany(companyData: InsertCompany): Promise<Company> {
-    if ('id' in companyData && companyData.id) {
-      const [company] = await db
-        .update(companies)
-        .set(companyData)
-        .where(eq(companies.id, companyData.id))
-        .returning();
-      return company;
+  async upsertCompany(companyData: Partial<InsertCompany> & { id?: string }): Promise<Company> {
+    if (companyData.id) {
+      return await prisma.company.update({
+        where: { id: companyData.id },
+        data: companyData
+      });
     } else {
-      const [company] = await db.insert(companies).values(companyData).returning();
-      return company;
+      return await prisma.company.create({
+        data: companyData as Prisma.CompanyCreateInput
+      });
     }
   }
   
   async deleteCompany(id: string): Promise<void> {
-    await db.delete(companies).where(eq(companies.id, id));
+    await prisma.company.delete({
+      where: { id }
+    });
   }
   
   async getSocialMediaLinks(): Promise<SocialMediaLink[]> {
-    return db
-      .select()
-      .from(socialMediaLinks)
-      .where(eq(socialMediaLinks.isActive, true))
-      .orderBy(socialMediaLinks.displayOrder);
+    return await prisma.socialMediaLink.findMany({
+      where: { isActive: true },
+      orderBy: { displayOrder: 'asc' }
+    });
   }
   
-  async upsertSocialMediaLink(linkData: InsertSocialMediaLink): Promise<SocialMediaLink> {
-    if ('id' in linkData && linkData.id) {
-      const [link] = await db
-        .update(socialMediaLinks)
-        .set(linkData)
-        .where(eq(socialMediaLinks.id, linkData.id))
-        .returning();
-      return link;
+  async upsertSocialMediaLink(linkData: Partial<InsertSocialMediaLink> & { id?: string }): Promise<SocialMediaLink> {
+    if (linkData.id) {
+      return await prisma.socialMediaLink.update({
+        where: { id: linkData.id },
+        data: linkData
+      });
     } else {
-      const [link] = await db.insert(socialMediaLinks).values(linkData).returning();
-      return link;
+      return await prisma.socialMediaLink.create({
+        data: linkData as Prisma.SocialMediaLinkCreateInput
+      });
     }
   }
   
   async deleteSocialMediaLink(id: string): Promise<void> {
-    await db.delete(socialMediaLinks).where(eq(socialMediaLinks.id, id));
+    await prisma.socialMediaLink.delete({
+      where: { id }
+    });
   }
   
   async getTermsPolicy(type: string): Promise<TermsPolicy | undefined> {
-    const [policy] = await db
-      .select()
-      .from(termsPolicy)
-      .where(eq(termsPolicy.type, type))
-      .limit(1);
-    return policy;
+    const policy = await prisma.termsPolicy.findFirst({
+      where: { type }
+    });
+    return policy ?? undefined;
   }
   
-  async upsertTermsPolicy(policyData: InsertTermsPolicy): Promise<TermsPolicy> {
+  async upsertTermsPolicy(policyData: Partial<InsertTermsPolicy> & { type: string }): Promise<TermsPolicy> {
     const existing = await this.getTermsPolicy(policyData.type);
     
     if (existing) {
-      const [policy] = await db
-        .update(termsPolicy)
-        .set({ ...policyData, updatedAt: new Date() })
-        .where(eq(termsPolicy.id, existing.id))
-        .returning();
-      return policy;
+      return await prisma.termsPolicy.update({
+        where: { id: existing.id },
+        data: {
+          ...policyData,
+          updatedAt: new Date()
+        }
+      });
     } else {
-      const [policy] = await db.insert(termsPolicy).values(policyData).returning();
-      return policy;
+      return await prisma.termsPolicy.create({
+        data: policyData as Prisma.TermsPolicyCreateInput
+      });
     }
   }
 }

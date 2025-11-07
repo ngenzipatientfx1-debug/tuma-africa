@@ -1,0 +1,193 @@
+// Prisma Schema for Tuma-Africa Link Cargo
+// Database: PostgreSQL
+// Tables: 10 (users, orders, order_status_history, messages, sessions, hero_content, about_us, companies, social_media_links, terms_policy)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Session storage table for authentication
+model Session {
+  sid    String   @id @db.VarChar
+  sess   Json
+  expire DateTime
+
+  @@index([expire], name: "IDX_session_expire")
+  @@map("sessions")
+}
+
+// User roles: user, employee, admin, super_admin
+model User {
+  id                   String    @id @default(dbgenerated("gen_random_uuid()")) @db.VarChar
+  email                String    @unique @db.VarChar
+  password             String    @db.VarChar // Hashed password
+  firstName            String?   @map("first_name") @db.VarChar
+  lastName             String?   @map("last_name") @db.VarChar
+  phone                String?   @db.VarChar
+  profileImageUrl      String?   @map("profile_image_url") @db.VarChar
+  role                 String    @default("user") @db.VarChar // user, employee, admin, super_admin
+  verificationStatus   String    @default("pending") @map("verification_status") @db.VarChar // pending, verified, rejected
+  idPhotoPath          String?   @map("id_photo_path") @db.VarChar
+  selfiePath           String?   @map("selfie_path") @db.VarChar
+  createdAt            DateTime  @default(now()) @map("created_at")
+  updatedAt            DateTime  @default(now()) @updatedAt @map("updated_at")
+
+  // Relations
+  orders               Order[]   @relation("UserOrders")
+  approvedOrders       Order[]   @relation("ApprovedBy")
+  declinedOrders       Order[]   @relation("DeclinedBy")
+  assignedOrders       Order[]   @relation("AssignedEmployee")
+  sentMessages         Message[] @relation("MessageSender")
+  statusUpdates        OrderStatusHistory[]
+
+  @@map("users")
+}
+
+// Orders table with full workflow support
+model Order {
+  id                 String    @id @default(dbgenerated("gen_random_uuid()")) @db.VarChar
+  userId             String    @map("user_id") @db.VarChar
+  productLink        String    @map("product_link")
+  productName        String    @map("product_name")
+  screenshotPath     String?   @map("screenshot_path")
+  quantity           Int       @default(1)
+  variation          String?
+  specifications     String?
+  notes              String?
+  shippingAddress    String    @map("shipping_address")
+  
+  // Status workflow
+  status             String    @default("pending") @db.VarChar // pending, approved, declined
+  orderStage         String?   @map("order_stage") @db.VarChar // purchased_from_china, in_warehouse, in_ship, in_rwanda, delivered
+  
+  // Approval workflow
+  approvedBy         String?   @map("approved_by") @db.VarChar
+  declinedBy         String?   @map("declined_by") @db.VarChar
+  declineReason      String?   @map("decline_reason")
+  assignedEmployeeId String?   @map("assigned_employee_id") @db.VarChar
+  
+  // Additional info
+  estimatedCost      Decimal?  @map("estimated_cost") @db.Decimal(10, 2)
+  trackingNumber     String?   @map("tracking_number") @db.VarChar
+  internalNotes      String?   @map("internal_notes") // Only visible to employees and admins
+  
+  createdAt          DateTime  @default(now()) @map("created_at")
+  updatedAt          DateTime  @default(now()) @updatedAt @map("updated_at")
+
+  // Relations
+  user               User      @relation("UserOrders", fields: [userId], references: [id])
+  approver           User?     @relation("ApprovedBy", fields: [approvedBy], references: [id])
+  decliner           User?     @relation("DeclinedBy", fields: [declinedBy], references: [id])
+  assignedEmployee   User?     @relation("AssignedEmployee", fields: [assignedEmployeeId], references: [id])
+  statusHistory      OrderStatusHistory[]
+  messages           Message[]
+
+  @@map("orders")
+}
+
+// Order status history for tracking timeline
+model OrderStatusHistory {
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.VarChar
+  orderId   String    @map("order_id") @db.VarChar
+  stage     String    @db.VarChar // purchased_from_china, in_warehouse, in_ship, in_rwanda, delivered
+  note      String?
+  updatedBy String?   @map("updated_by") @db.VarChar
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  // Relations
+  order     Order     @relation(fields: [orderId], references: [id])
+  updater   User?     @relation(fields: [updatedBy], references: [id])
+
+  @@map("order_status_history")
+}
+
+// Messages table for chat/inbox with media support
+model Message {
+  id               String    @id @default(dbgenerated("gen_random_uuid()")) @db.VarChar
+  orderId          String?   @map("order_id") @db.VarChar
+  senderId         String    @map("sender_id") @db.VarChar
+  receiverId       String?   @map("receiver_id") @db.VarChar // For employee-admin chat
+  content          String
+  mediaType        String    @default("text") @map("media_type") @db.VarChar // text, image, video, document
+  mediaPath        String?   @map("media_path")
+  conversationType String    @default("user_order") @map("conversation_type") @db.VarChar // user_order, employee_admin
+  isRead           Boolean   @default(false) @map("is_read")
+  createdAt        DateTime  @default(now()) @map("created_at")
+
+  // Relations
+  sender           User      @relation("MessageSender", fields: [senderId], references: [id])
+  order            Order?    @relation(fields: [orderId], references: [id])
+
+  @@map("messages")
+}
+
+// Hero content management (for Super Admin)
+model HeroContent {
+  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.VarChar
+  mediaType    String    @default("image") @map("media_type") @db.VarChar // image, video
+  mediaPath    String    @map("media_path")
+  heading      String
+  subheading   String
+  buttonText   String    @map("button_text")
+  buttonLink   String    @map("button_link")
+  isActive     Boolean   @default(true) @map("is_active")
+  displayOrder Int       @default(0) @map("display_order")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @default(now()) @updatedAt @map("updated_at")
+
+  @@map("hero_content")
+}
+
+// About Us content
+model AboutUs {
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.VarChar
+  heading   String
+  content   String
+  mediaType String?   @map("media_type") @db.VarChar // image, video, null
+  mediaPath String?   @map("media_path")
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at")
+
+  @@map("about_us")
+}
+
+// Companies showcase
+model Company {
+  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.VarChar
+  name         String    @db.VarChar
+  logoPath     String    @map("logo_path")
+  url          String
+  displayOrder Int       @default(0) @map("display_order")
+  isActive     Boolean   @default(true) @map("is_active")
+  createdAt    DateTime  @default(now()) @map("created_at")
+
+  @@map("companies")
+}
+
+// Social media links
+model SocialMediaLink {
+  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.VarChar
+  platform     String    @db.VarChar // facebook, instagram, tiktok, youtube, etc
+  iconPath     String    @map("icon_path")
+  url          String
+  displayOrder Int       @default(0) @map("display_order")
+  isActive     Boolean   @default(true) @map("is_active")
+  createdAt    DateTime  @default(now()) @map("created_at")
+
+  @@map("social_media_links")
+}
+
+// Terms and Privacy Policy
+model TermsPolicy {
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.VarChar
+  type      String    @db.VarChar // terms, privacy
+  title     String
+  content   String
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at")
+
+  @@map("terms_policy")
+}
